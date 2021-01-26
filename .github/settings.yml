@@ -1,11 +1,12 @@
 repository:
   name: drone-ansible
   description: Drone plugin to provision via Ansible
-  homepage: http://plugins.drone.io/drone-plugins/drone-ansible
+  homepage: https://hub.docker.com/r/owncloudci/drone-ansible
   topics: drone, drone-plugin
 
   private: false
   has_issues: true
+  has_projects: false
   has_wiki: false
   has_downloads: false
 
@@ -19,6 +20,9 @@ labels:
   - name: bug
     color: d73a4a
     description: Something isn't working
+  - name: documentation
+    color: 0075ca
+    description: Improvements or additions to documentation
   - name: duplicate
     color: cfd3d7
     description: This issue or pull request already exists
@@ -37,39 +41,19 @@ labels:
   - name: question
     color: d876e3
     description: Further information is requested
-  - name: renovate
-    color: e99695
-    description: Automated action from Renovate
   - name: wontfix
     color: ffffff
     description: This will not be worked on
 
-teams:
-  - name: Admins
-    permission: admin
-  - name: Captain
-    permission: admin
-  - name: Maintainers
-    permission: push
-
 branches:
   - name: master
     protection:
-      required_pull_request_reviews:
-        required_approving_review_count: 1
-        dismiss_stale_reviews: false
-        require_code_owner_reviews: false
-        dismissal_restrictions:
-          teams:
-            - Admins
-            - Captain
+      required_pull_request_reviews: null
       required_status_checks:
         strict: true
         contexts:
           - continuous-integration/drone/pr
-      enforce_admins: false
-      restrictions:
-        users: []
-        teams:
-          - Admins
-          - Captain
+      enforce_admins: null
+      restrictions: null
+
+---
