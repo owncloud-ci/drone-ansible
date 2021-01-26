@@ -213,21 +213,18 @@ def pushrm(ctx):
     "name": "pushrm",
     "steps": [
         {
-            name: "pushrm",
-            image: "chko/docker-pushrm:1",
-            environment: {
-                DOCKER_PASS: {
-                    from_secret: "docker_password",
+            "name": "pushrm",
+            "image": "chko/docker-pushrm:1",
+            "environment": {
+                "DOCKER_PASS": {
+                    "from_secret": "docker_password",
                 },
-                DOCKER_USER: {
-                    from_secret: "docker_username",
+                "DOCKER_USER": {
+                    "from_secret": "docker_username",
                 },
-                PUSHRM_FILE: "README.md",
-                PUSHRM_SHORT: "Drone plugin to provision infrastructure with Ansible",
-                PUSHRM_TARGET: owncloudci/%s" % (ctx.repo.name),
-            },
-            when: {
-                status: ["success"],
+                "PUSHRM_FILE": "README.md",
+                "PUSHRM_SHORT": "Drone plugin to provision infrastructure with Ansible",
+                "PUSHRM_TARGET": "owncloudci/%s" % (ctx.repo.name),
             },
         },
     ],
@@ -238,6 +235,7 @@ def pushrm(ctx):
         "ref": [
             "refs/tags/**",
         ],
+        "status": ["success"],
     },
   }]
 
