@@ -1,13 +1,18 @@
 FROM plugins/base:linux-arm
 
-LABEL maintainer="Drone.IO Community <drone-dev@googlegroups.com>" \
-  org.label-schema.name="Drone Ansible" \
-  org.label-schema.vendor="Drone.IO Community" \
-  org.label-schema.schema-version="1.0"
+LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
+LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
+LABEL org.opencontainers.image.title="drone-ansible"
+LABEL org.opencontainers.image.url="https://github.com/owncloud-ci/drone-ansible"
+LABEL org.opencontainers.image.source="https://github.com/owncloud-ci/drone-ansible"
+LABEL org.opencontainers.image.documentation="https://github.com/owncloud-ci/drone-ansible"
+
+# renovate: datasource=pypi depName=ansible
+ENV ANSIBLE_VERSION="2.10.5"
 
 RUN apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-requests py3-paramiko python3-dev libffi-dev libressl-dev libressl build-base && \
   pip3 install -U pip && \
-  pip3 install ansible==2.10.5 boto3 hcloud && \
+  pip3 install ansible=="${ANSIBLE_VERSION}" boto3 hcloud && \
   apk del --no-cache python3-dev libffi-dev libressl-dev build-base
 
 ADD release/linux/arm/drone-ansible /bin/
