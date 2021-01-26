@@ -7,7 +7,7 @@ def main(ctx):
         linux(ctx, "arm"),
     ]
 
-    after = manifest(ctx) + notification(ctx)
+    after = manifest(ctx) + release(ctx) + notification(ctx)
 
     for b in before:
         for s in stages:
@@ -206,6 +206,35 @@ def manifest(ctx):
         },
     }]
 
+def release(ctx):
+  return [{
+    "kind": "pipeline",
+    "type": "docker",
+    "name": "release",
+    "steps": [
+      {
+        "name": "release",
+        "image": "plugins/github-release",
+        "settings": {
+            "api_key": {
+                "from_secret": "github_token",
+            },
+            "note": "CHANGELOG.md",
+            "overwrite": True,
+            "title": ctx.build.ref.replace("refs/tags/", ""),
+        },
+      }
+    ],
+    "depends_on": [
+        "manifest",
+    ],
+    "trigger": {
+        "ref": [
+            "refs/tags/**",
+        ],
+    },
+  }]
+
 def notification(ctx):
   return [{
     "kind": "pipeline",
@@ -216,18 +245,18 @@ def notification(ctx):
     },
     "steps": [
       {
-        'name': 'notify',
-        'image': 'plugins/slack',
-        'settings': {
-          'webhook': {
-            'from_secret': 'private_rocketchat',
+        "name": "notify",
+        "image": "plugins/slack",
+        "settings": {
+          "webhook": {
+            "from_secret": "private_rocketchat",
           },
-          'channel': 'builds',
+          "channel": "builds",
         },
       }
     ],
     "depends_on": [
-        "manifest",
+        "release",
     ],
     "trigger": {
         "ref": [
