@@ -21,6 +21,7 @@ host_key_checking = False
 `
 
 type (
+	// Config for the plugin.
 	Config struct {
 		Requirements      string
 		Galaxy            string
@@ -59,11 +60,13 @@ type (
 		BecomeUser        string
 	}
 
+	// Plugin definition.
 	Plugin struct {
 		Config Config
 	}
 )
 
+// Exec provides the implementation of the plugin.
 func (p *Plugin) Exec() error {
 	if err := p.playbooks(); err != nil {
 		return err
@@ -248,7 +251,7 @@ func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
 	if len(p.Config.ModulePath) > 0 {
 		args = append(args, "--module-path", strings.Join(p.Config.ModulePath, ":"))
 	}
-	
+
 	if p.Config.VaultID != "" {
 		args = append(args, "--vault-id", p.Config.VaultID)
 	}
@@ -256,11 +259,11 @@ func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
 	if p.Config.VaultPasswordFile != "" {
 		args = append(args, "--vault-password-file", p.Config.VaultPasswordFile)
 	}
-	
+
 	for _, v := range p.Config.ExtraVars {
 		args = append(args, "--extra-vars", v)
 	}
-	
+
 	if p.Config.ListHosts {
 		args = append(args, "--list-hosts")
 		args = append(args, p.Config.Playbooks...)
