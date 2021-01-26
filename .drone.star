@@ -7,7 +7,7 @@ def main(ctx):
         linux(ctx, "arm"),
     ]
 
-    after = manifest(ctx) + release(ctx) + notification(ctx)
+    after = manifest(ctx) + pushrm(ctx) + release(ctx) + notification(ctx)
 
     for b in before:
         for s in stages:
@@ -206,27 +206,62 @@ def manifest(ctx):
         },
     }]
 
+def pushrm(ctx):
+  return [{
+    "kind": "pipeline",
+    "type": "docker",
+    "name": "pushrm",
+    "steps": [
+        {
+            name: "pushrm",
+            image: "chko/docker-pushrm:1",
+            environment: {
+                DOCKER_PASS: {
+                    from_secret: "docker_password",
+                },
+                DOCKER_USER: {
+                    from_secret: "docker_username",
+                },
+                PUSHRM_FILE: "README.md",
+                PUSHRM_SHORT: "Drone plugin to provision infrastructure with Ansible",
+                PUSHRM_TARGET: owncloudci/%s" % (ctx.repo.name),
+            },
+            when: {
+                status: ["success"],
+            },
+        },
+    ],
+    "depends_on": [
+        "manifest",
+    ],
+    "trigger": {
+        "ref": [
+            "refs/tags/**",
+        ],
+    },
+  }]
+
 def release(ctx):
   return [{
     "kind": "pipeline",
     "type": "docker",
     "name": "release",
     "steps": [
-      {
-        "name": "release",
-        "image": "plugins/github-release",
-        "settings": {
-            "api_key": {
-                "from_secret": "github_token",
+        {
+            "name": "release",
+            "image": "plugins/github-release",
+            "settings": {
+                "api_key": {
+                    "from_secret": "github_token",
+                },
+                "note": "CHANGELOG.md",
+                "overwrite": True,
+                "title": ctx.build.ref.replace("refs/tags/", ""),
             },
-            "note": "CHANGELOG.md",
-            "overwrite": True,
-            "title": ctx.build.ref.replace("refs/tags/", ""),
-        },
-      }
+        }
     ],
     "depends_on": [
-        "manifest",
+        "pushrm",
     ],
     "trigger": {
         "ref": [
@@ -244,16 +279,16 @@ def notification(ctx):
         "disable": True,
     },
     "steps": [
-      {
-        "name": "notify",
-        "image": "plugins/slack",
-        "settings": {
-          "webhook": {
-            "from_secret": "private_rocketchat",
-          },
-          "channel": "builds",
-        },
-      }
+        {
+            "name": "notify",
+            "image": "plugins/slack",
+            "settings": {
+            "webhook": {
+                "from_secret": "private_rocketchat",
+            },
+            "channel": "builds",
+            },
+        }
     ],
     "depends_on": [
         "release",
