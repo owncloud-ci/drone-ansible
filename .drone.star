@@ -36,6 +36,12 @@ def testing(ctx):
                 "commands": [
                     "go run honnef.co/go/tools/cmd/staticcheck ./...",
                 ],
+                "volumes": [
+                    {
+                        "name": "gopath",
+                        "path": "/go",
+                    },
+                ],
             },
             {
                 "name": "lint",
@@ -43,13 +49,24 @@ def testing(ctx):
                 "commands": [
                     "go run golang.org/x/lint/golint -set_exit_status ./...",
                 ],
-
+                "volumes": [
+                    {
+                        "name": "gopath",
+                        "path": "/go",
+                    },
+                ],
             },
             {
                 "name": "vet",
                 "image": "golang:1.15",
                 "commands": [
                     "go vet ./...",
+                ],
+                "volumes": [
+                    {
+                        "name": "gopath",
+                        "path": "/go",
+                    },
                 ],
             },
             {
@@ -58,6 +75,18 @@ def testing(ctx):
                 "commands": [
                     "go test -cover ./...",
                 ],
+                "volumes": [
+                    {
+                        "name": "gopath",
+                        "path": "/go",
+                    },
+                ],
+            },
+        ],
+        "volumes": [
+            {
+                "name": "gopath",
+                "temp": {},
             },
         ],
         "trigger": {
@@ -72,11 +101,11 @@ def testing(ctx):
 def linux(ctx, arch):
     if ctx.build.event == "tag":
         build = [
-            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible ./cmd/drone-ansible' % (ctx.build.ref.replace("refs/tags/v", ""), arch),
+            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible .' % (ctx.build.ref.replace("refs/tags/v", ""), arch),
         ]
     else:
         build = [
-            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible ./cmd/drone-ansible' % (ctx.build.commit[0:8], arch),
+            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible .' % (ctx.build.commit[0:8], arch),
         ]
 
     steps = [
