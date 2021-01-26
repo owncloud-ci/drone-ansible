@@ -1,4 +1,4 @@
-module github.com/drone-plugins/drone-ansible
+module github.com/owncloud-ci/drone-ansible
 
 go 1.15
 
