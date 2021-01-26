@@ -1,7 +1,7 @@
 # drone-ansible
 
-[![Build Status](https://drone.owncloud.com/api/badges/owncloud-ci/hugo/status.svg)](https://drone.owncloud.com/owncloud-ci/hugo/)
-[![Docker Hub](https://img.shields.io/badge/docker-latest-blue.svg?logo=docker&logoColor=white)](https://hub.docker.com/r/owncloudci/hugo)
+[![Build Status](https://drone.owncloud.com/api/badges/owncloud-ci/drone-ansible/status.svg)](https://drone.owncloud.com/owncloud-ci/drone-ansible/)
+[![Docker Hub](https://img.shields.io/badge/docker-latest-blue.svg?logo=docker&logoColor=white)](https://hub.docker.com/r/owncloudci/drone-ansible)
 
 Drone plugin to provision infrastructure with [Ansible](https://www.ansible.com/).
 
