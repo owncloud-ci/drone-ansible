@@ -233,6 +233,7 @@ def pushrm(ctx):
     ],
     "trigger": {
         "ref": [
+            "refs/heads/master",
             "refs/tags/**",
         ],
         "status": ["success"],
@@ -282,7 +283,7 @@ def notification(ctx):
             "image": "plugins/slack",
             "settings": {
             "webhook": {
-                "from_secret": "private_rocketchat",
+                "from_secret": "slack_webhook_private",
             },
             "channel": "builds",
             },
