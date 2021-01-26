@@ -1,6 +1,6 @@
 # drone-ansible
 
-[![Build Status](https://drone.owncloud.com/api/badges/owncloud-ci/drone-ansible/status.svg)](https://drone.owncloud.com/owncloud-ci/drone-ansible/)
+[![Build Status](https://drone.owncloud.com/api/badges/owncloud-ops/drone-ansible/status.svg)](https://drone.owncloud.com/owncloud-ops/drone-ansible/)
 [![Docker Hub](https://img.shields.io/badge/docker-latest-blue.svg?logo=docker&logoColor=white)](https://hub.docker.com/r/owncloudci/drone-ansible)
 [![Source: GitHub](https://img.shields.io/badge/source-github-blue.svg?logo=github&logoColor=white)](https://github.com/owncloud-ops/drone-ansible)
 [![License: Apache-2.0](https://img.shields.io/github/license/owncloud-ops/drone-ansible)](https://github.com/owncloud-ops/drone-ansible/blob/main/LICENSE)
@@ -45,4 +45,4 @@ docker run --rm \
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/owncloud-ci/drone-ansible/blob/master/LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/owncloud-ops/drone-ansible/blob/master/LICENSE) file for details.
