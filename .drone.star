@@ -36,12 +36,6 @@ def testing(ctx):
                 "commands": [
                     "go run honnef.co/go/tools/cmd/staticcheck ./...",
                 ],
-                "volumes": [
-                    {
-                        "name": "gopath",
-                        "path": "/go",
-                    },
-                ],
             },
             {
                 "name": "lint",
@@ -49,24 +43,13 @@ def testing(ctx):
                 "commands": [
                     "go run golang.org/x/lint/golint -set_exit_status ./...",
                 ],
-                "volumes": [
-                    {
-                        "name": "gopath",
-                        "path": "/go",
-                    },
-                ],
+
             },
             {
                 "name": "vet",
                 "image": "golang:1.15",
                 "commands": [
                     "go vet ./...",
-                ],
-                "volumes": [
-                    {
-                        "name": "gopath",
-                        "path": "/go",
-                    },
                 ],
             },
             {
@@ -75,18 +58,6 @@ def testing(ctx):
                 "commands": [
                     "go test -cover ./...",
                 ],
-                "volumes": [
-                    {
-                        "name": "gopath",
-                        "path": "/go",
-                    },
-                ],
-            },
-        ],
-        "volumes": [
-            {
-                "name": "gopath",
-                "temp": {},
             },
         ],
         "trigger": {
