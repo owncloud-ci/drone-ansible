@@ -283,7 +283,7 @@ def notification(ctx):
             "image": "plugins/slack",
             "settings": {
             "webhook": {
-                "from_secret": "slack_webhook_private",
+                "from_secret": "private_rocketchat",
             },
             "channel": "builds",
             },
