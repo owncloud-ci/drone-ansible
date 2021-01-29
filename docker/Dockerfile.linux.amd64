@@ -1,4 +1,4 @@
-FROM plugins/base:linux-amd64@sha256:8def0d87bfb2f739481e36a4ff54e101f77b3e9788d9f158b1b993b720ea58fc
+FROM plugins/base:linux-amd64@sha256:d1dc95834cf9c6d1a4f5d77991ccba4a3609e4064607488c080c56d3a14eead0
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
