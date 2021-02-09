@@ -143,7 +143,7 @@ def linux(ctx, arch):
             "name": "docker",
             "image": "plugins/docker",
             "settings": {
-                "dockerfile": "docker/Dockerfile.linux.%s" % (arch),
+                "dockerfile": "docker/Dockerfile.%s" % (arch),
                 "repo": "owncloudci/%s" % (ctx.repo.name),
                 "username": {
                     "from_secret": "docker_username",
@@ -152,14 +152,26 @@ def linux(ctx, arch):
                     "from_secret": "docker_password",
                 },
                 "auto_tag": True,
-                "auto_tag_suffix": "linux-%s" % (arch),
+                "auto_tag_suffix": "%s" % (arch),
+            },
+        })
+    else:
+        steps.append({
+            "name": "dryrun",
+            "image": "plugins/docker",
+            "settings": {
+                'dry_run': True,
+                "dockerfile": "docker/Dockerfile.%s" % (arch),
+                "repo": "owncloudci/%s" % (ctx.repo.name),
+                "auto_tag": True,
+                "auto_tag_suffix": "%s" % (arch),
             },
         })
 
     return {
         "kind": "pipeline",
         "type": "docker",
-        "name": "linux-%s" % (arch),
+        "name": "build-%s" % (arch),
         "platform": {
             "os": "linux",
             "arch": arch,
