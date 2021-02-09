@@ -1,4 +1,4 @@
-FROM plugins/base:linux-amd64@sha256:d1dc95834cf9c6d1a4f5d77991ccba4a3609e4064607488c080c56d3a14eead0
+FROM plugins/base:linux-arm64@sha256:9bdb27fa8e8d1ecdb966638d2fc2e0dfed02f9c74f89fae6fe96acf4efb2c771
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
@@ -7,13 +7,15 @@ LABEL org.opencontainers.image.url="https://github.com/owncloud-ci/drone-ansible
 LABEL org.opencontainers.image.source="https://github.com/owncloud-ci/drone-ansible"
 LABEL org.opencontainers.image.documentation="https://github.com/owncloud-ci/drone-ansible"
 
+ARG ANSIBLE_VERSION
+
 # renovate: datasource=pypi depName=ansible
-ENV ANSIBLE_VERSION="2.10.5"
+ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-2.10.5}"
 
 RUN apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-requests py3-paramiko python3-dev libffi-dev libressl-dev libressl build-base && \
   pip3 install -U pip && \
   pip3 install ansible=="${ANSIBLE_VERSION}" boto3 hcloud && \
   apk del --no-cache python3-dev libffi-dev libressl-dev build-base
 
-ADD release/linux/amd64/drone-ansible /bin/
+ADD release/linux/arm64/drone-ansible /bin/
 ENTRYPOINT ["/bin/drone-ansible"]
