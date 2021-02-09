@@ -43,6 +43,22 @@ docker run --rm \
   plugins/ansible
 ```
 
+## Releases
+
+Please create and commit a changelog for the next tag first:
+
+```Shell
+git-chglog -o CHANGELOG.md --next-tag v2.10.3 v2.10.3
+git add CHANGELOG.md; git commit -m "[skip ci] update changelog"; git push
+```
+
+Afterwards create and push the new tag to trigger the CI release process:
+
+```Shell
+git tag v2.10.3
+git push origin v2.10.3
+```
+
 ## License
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/owncloud-ci/drone-ansible/blob/master/LICENSE) file for details.
