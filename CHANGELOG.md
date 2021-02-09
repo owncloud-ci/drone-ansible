@@ -1,13 +1,15 @@
 # Changelog
 
-## v2.10.2 (2021-01-26)
+## [v2.10.3](https://github.com/owncloud-ci/drone-ansible/compare/v2.10.2...v2.10.3) (2021-02-09)
 
-### Fixes
+### Chore
 
-- replace labels in dockerfiles
+- **deps:** update dependency ansible to v2.10.6 ([#10](https://github.com/owncloud-ci/drone-ansible/issues/10))
+- **deps:** update plugins/base:linux-amd64 docker digest to d1dc958
+- **deps:** update plugins/base:linux-arm docker digest to 186ca99
+- **deps:** update plugins/base:linux-arm64 docker digest to 9bdb27f
 
-### Others
+### Refactor
 
-- **deps:** pin plugins/base docker tag ([#2](https://github.com/owncloud-ops/drone-ansible/issues/2))
-- chore: push readme to dockerhub
-- enable renovate
+- cleanup docker setup ([#9](https://github.com/owncloud-ci/drone-ansible/issues/9))
+
