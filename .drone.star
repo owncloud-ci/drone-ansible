@@ -101,11 +101,11 @@ def testing(ctx):
 def linux(ctx, arch):
     if ctx.build.event == "tag":
         build = [
-            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible .' % (ctx.build.ref.replace("refs/tags/v", ""), arch),
+            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible ./cmd/drone-ansible' % (ctx.build.ref.replace("refs/tags/v", ""), arch),
         ]
     else:
         build = [
-            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible .' % (ctx.build.commit[0:8], arch),
+            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible ./cmd/drone-ansible' % (ctx.build.commit[0:8], arch),
         ]
 
     steps = [
