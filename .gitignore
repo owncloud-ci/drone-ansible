@@ -1,5 +1,5 @@
-release/
+/release/
+/drone-ansible*
 
 coverage.out
-drone-ansible
 .drone.yml
