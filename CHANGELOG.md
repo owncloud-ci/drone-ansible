@@ -1,15 +1,12 @@
 # Changelog
 
-## [v2.10.3](https://github.com/owncloud-ci/drone-ansible/compare/v2.10.2...v2.10.3) (2021-02-09)
+## [v2.10.4](https://github.com/owncloud-ci/drone-ansible/compare/v2.10.3...v2.10.4) (2021-02-10)
 
 ### Code Refactoring
 
-- cleanup docker setup ([#9](https://github.com/owncloud-ci/drone-ansible/issues/9))
+- rewrite to use plugin boilerplate ([#12](https://github.com/owncloud-ci/drone-ansible/issues/12))
 
 ### Others
 
-- **deps:** update dependency ansible to v2.10.6 ([#10](https://github.com/owncloud-ci/drone-ansible/issues/10))
-- **deps:** update plugins/base:linux-amd64 docker digest to d1dc958
-- **deps:** update plugins/base:linux-arm docker digest to 186ca99
-- **deps:** update plugins/base:linux-arm64 docker digest to 9bdb27f
+- **deps:** update dependency ansible to v2.10.7 ([#11](https://github.com/owncloud-ci/drone-ansible/issues/11))
 
