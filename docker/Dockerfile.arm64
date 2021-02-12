@@ -1,4 +1,4 @@
-FROM plugins/base:linux-arm64@sha256:9bdb27fa8e8d1ecdb966638d2fc2e0dfed02f9c74f89fae6fe96acf4efb2c771
+FROM arm64v8/alpine:3.13@sha256:019c59128325536e838a5f36028db214335129f9aa83214cc2c60c10dc1797ac
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
