@@ -259,16 +259,30 @@ def release(ctx):
     "name": "release",
     "steps": [
         {
-            "name": "release",
-            "image": "plugins/github-release",
-            "settings": {
-                "api_key": {
-                    "from_secret": "github_token",
-                },
-                "note": "CHANGELOG.md",
-                "overwrite": True,
-                "title": ctx.build.ref.replace("refs/tags/", ""),
-            },
+            "name": "changelog",
+            "image": "thegeeklab/git-chglog",
+            "commands": [
+                "git fetch -tq",
+                "git-chglog --no-color --no-emoji %s" % (ctx.build.ref.replace("refs/tags/v", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
+                "git-chglog --no-color --no-emoji -o CHANGELOG.md %s" % (ctx.build.ref.replace("refs/tags/v", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
+            ]
+        },
+        {
+           "name": "release",
+           "image": "plugins/github-release",
+           "settings": {
+               "api_key": {
+                   "from_secret": "github_token",
+               },
+               "note": "CHANGELOG.md",
+               "overwrite": True,
+               "title": ctx.build.ref.replace("refs/tags/", ""),
+           },
+           "when": {
+             "ref": [
+                "refs/tags/**",
+             ],
+          },
         }
     ],
     "depends_on": [
@@ -276,7 +290,9 @@ def release(ctx):
     ],
     "trigger": {
         "ref": [
+            "refs/heads/master",
             "refs/tags/**",
+            "refs/pull/**",
         ],
     },
   }]
