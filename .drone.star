@@ -262,8 +262,8 @@ def release(ctx):
             "image": "thegeeklab/git-chglog",
             "commands": [
                 "git fetch -tq",
-                "git-chglog --no-color --no-emoji %s" % (ctx.build.ref.replace("refs/tags/v", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
-                "git-chglog --no-color --no-emoji -o CHANGELOG.md %s" % (ctx.build.ref.replace("refs/tags/v", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
+                "git-chglog --no-color --no-emoji %s" % (ctx.build.ref.replace("refs/tags/", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
+                "git-chglog --no-color --no-emoji -o CHANGELOG.md %s" % (ctx.build.ref.replace("refs/tags/", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
             ]
         },
         {
