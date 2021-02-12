@@ -163,8 +163,7 @@ def linux(ctx, arch):
                 'dry_run': True,
                 "dockerfile": "docker/Dockerfile.%s" % (arch),
                 "repo": "owncloudci/%s" % (ctx.repo.name),
-                "auto_tag": True,
-                "auto_tag_suffix": "%s" % (arch),
+                "tags": "latest",
             },
         })
 
