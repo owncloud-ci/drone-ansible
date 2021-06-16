@@ -46,15 +46,22 @@ labels:
     color: ffffff
     description: This will not be worked on
 
+teams:
+  - name: bot
+    permission: admin
+
 branches:
   - name: master
     protection:
       required_pull_request_reviews: null
       required_status_checks:
-        strict: true
+        strict: false
         contexts:
           - continuous-integration/drone/pr
-      enforce_admins: null
-      restrictions: null
-
-...
+      enforce_admins: false
+      restrictions:
+        apps:
+          - renovate
+        users: []
+        teams:
+          - bot
