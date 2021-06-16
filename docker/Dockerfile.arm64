@@ -15,7 +15,7 @@ ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-4.1.0}"
 RUN apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-requests py3-paramiko python3-dev libffi-dev build-base && \
   pip3 install -U pip && \
   pip3 install ansible=="${ANSIBLE_VERSION}" boto3 hcloud pywinrm && \
-  apk del --no-cache python3-dev libffi-dev linressl-dev build-base
+  apk del --no-cache python3-dev libffi-dev build-base
 
 ADD release/linux/arm64/drone-ansible /bin/
 ENTRYPOINT ["/bin/drone-ansible"]
