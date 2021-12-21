@@ -67,5 +67,5 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](https:
 ## Copyright
 
 ```Text
-Copyright (c) 2021 ownCloud GmbH
+Copyright (c) 2022 ownCloud GmbH
 ```
