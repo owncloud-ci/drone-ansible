@@ -1,5 +1,5 @@
 def main(ctx):
-    before = testing(ctx)
+    before = test(ctx)
 
     stages = [
         docker(ctx, "amd64"),
