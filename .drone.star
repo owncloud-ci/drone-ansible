@@ -2,12 +2,13 @@ def main(ctx):
     before = testing(ctx)
 
     stages = [
-        linux(ctx, "amd64"),
-        linux(ctx, "arm64"),
-        linux(ctx, "arm"),
+        docker(ctx, "amd64"),
+        docker(ctx, "arm64"),
+        docker(ctx, "arm"),
+        build(ctx),
     ]
 
-    after = manifest(ctx) + pushrm(ctx) + release(ctx) + notification(ctx)
+    after = manifest(ctx) + pushrm(ctx)
 
     for b in before:
         for s in stages:
@@ -19,26 +20,38 @@ def main(ctx):
 
     return before + stages + after
 
-def testing(ctx):
-    return [{
+def test(ctx):
+    return {
         "kind": "pipeline",
         "type": "docker",
-        "name": "testing",
+        "name": "test",
         "platform": {
             "os": "linux",
             "arch": "amd64",
         },
         "steps": [
             {
-                "name": "staticcheck",
+                "name": "deps",
                 "image": "golang:1.18",
-                "pull": "always",
                 "commands": [
-                    "go run honnef.co/go/tools/cmd/staticcheck ./...",
+                    "make deps",
                 ],
                 "volumes": [
                     {
-                        "name": "gopath",
+                        "name": "godeps",
+                        "path": "/go",
+                    },
+                ],
+            },
+            {
+                "name": "generate",
+                "image": "golang:1.18",
+                "commands": [
+                    "make generate",
+                ],
+                "volumes": [
+                    {
+                        "name": "godeps",
                         "path": "/go",
                     },
                 ],
@@ -47,24 +60,11 @@ def testing(ctx):
                 "name": "lint",
                 "image": "golang:1.18",
                 "commands": [
-                    "go run golang.org/x/lint/golint -set_exit_status ./...",
+                    "make lint",
                 ],
                 "volumes": [
                     {
-                        "name": "gopath",
-                        "path": "/go",
-                    },
-                ],
-            },
-            {
-                "name": "vet",
-                "image": "golang:1.18",
-                "commands": [
-                    "go vet ./...",
-                ],
-                "volumes": [
-                    {
-                        "name": "gopath",
+                        "name": "godeps",
                         "path": "/go",
                     },
                 ],
@@ -73,11 +73,11 @@ def testing(ctx):
                 "name": "test",
                 "image": "golang:1.18",
                 "commands": [
-                    "go test -cover ./...",
+                    "make test",
                 ],
                 "volumes": [
                     {
-                        "name": "gopath",
+                        "name": "godeps",
                         "path": "/go",
                     },
                 ],
@@ -85,7 +85,7 @@ def testing(ctx):
         ],
         "volumes": [
             {
-                "name": "gopath",
+                "name": "godeps",
                 "temp": {},
             },
         ],
@@ -96,87 +96,193 @@ def testing(ctx):
                 "refs/pull/**",
             ],
         },
-    }]
+    }
 
-def linux(ctx, arch):
-    if ctx.build.event == "tag":
-        build = [
-            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible ./cmd/drone-ansible' % (ctx.build.ref.replace("refs/tags/v", ""), arch),
-        ]
-    else:
-        build = [
-            'go build -v -ldflags "-X main.version=%s" -a -tags netgo -o release/linux/%s/drone-ansible ./cmd/drone-ansible' % (ctx.build.commit[0:8], arch),
-        ]
-
-    steps = [
-        {
-            "name": "environment",
-            "image": "golang:1.18",
-            "pull": "always",
-            "environment": {
-                "CGO_ENABLED": "0",
+def build(ctx):
+    return {
+        "kind": "pipeline",
+        "type": "docker",
+        "name": "build-binaries",
+        "platform": {
+            "os": "linux",
+            "arch": "amd64",
+        },
+        "steps": [
+            {
+                "name": "generate",
+                "image": "golang:1.18",
+                "pull": "always",
+                "commands": [
+                    "make generate",
+                ],
+                "volumes": [
+                    {
+                        "name": "godeps",
+                        "path": "/go",
+                    },
+                ],
             },
-            "commands": [
-                "go version",
-                "go env",
+            {
+                "name": "build",
+                "image": "techknowlogick/xgo:go-1.18.x",
+                "pull": "always",
+                "commands": [
+                    "make release",
+                ],
+                "volumes": [
+                    {
+                        "name": "godeps",
+                        "path": "/go",
+                    },
+                ],
+            },
+            {
+                "name": "executable",
+                "image": "golang:1.18",
+                "pull": "always",
+                "commands": [
+                    "$(find dist/ -executable -type f -iname drone-ansible-linux-amd64) --help",
+                ],
+            },
+            {
+                "name": "changelog",
+                "image": "thegeeklab/git-chglog",
+                "commands": [
+                    "git fetch -tq",
+                    "git-chglog --no-color --no-emoji %s" % (ctx.build.ref.replace("refs/tags/", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
+                    "git-chglog --no-color --no-emoji -o CHANGELOG.md %s" % (ctx.build.ref.replace("refs/tags/", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
+                ],
+            },
+            {
+                "name": "publish",
+                "image": "plugins/github-release",
+                "pull": "always",
+                "settings": {
+                    "api_key": {
+                        "from_secret": "github_token",
+                    },
+                    "files": [
+                        "dist/*",
+                    ],
+                    "note": "CHANGELOG.md",
+                    "title": ctx.build.ref.replace("refs/tags/", ""),
+                    "overwrite": True,
+                },
+                "when": {
+                    "ref": [
+                        "refs/tags/**",
+                    ],
+                },
+            },
+        ],
+        "volumes": [
+            {
+                "name": "godeps",
+                "temp": {},
+            },
+        ],
+        "depends_on": [
+            "test",
+        ],
+        "trigger": {
+            "ref": [
+                "refs/heads/master",
+                "refs/tags/**",
+                "refs/pull/**",
             ],
         },
-        {
-            "name": "build",
-            "image": "golang:1.18",
-            "environment": {
-                "CGO_ENABLED": "0",
-            },
-            "commands": build,
-        },
-        {
-            "name": "executable",
-            "image": "golang:1.18",
-            "commands": [
-                "./release/linux/%s/drone-ansible --help" % (arch),
-            ],
-        },
-    ]
+    }
 
-    if ctx.build.event != "pull_request":
-        steps.append({
-            "name": "docker",
-            "image": "plugins/docker",
-            "settings": {
-                "dockerfile": "docker/Dockerfile.%s" % (arch),
-                "repo": "owncloudci/%s" % (ctx.repo.name),
-                "username": {
-                    "from_secret": "docker_username",
-                },
-                "password": {
-                    "from_secret": "docker_password",
-                },
-                "auto_tag": True,
-                "auto_tag_suffix": "%s" % (arch),
-            },
-        })
-    else:
-        steps.append({
-            "name": "dryrun",
-            "image": "plugins/docker",
-            "settings": {
-                'dry_run': True,
-                "dockerfile": "docker/Dockerfile.%s" % (arch),
-                "repo": "owncloudci/%s" % (ctx.repo.name),
-                "tags": "latest",
-            },
-        })
-
+def docker(ctx):
     return {
         "kind": "pipeline",
         "type": "docker",
         "name": "build-%s" % (arch),
         "platform": {
             "os": "linux",
-            "arch": arch,
+            "arch": "amd64",
         },
-        "steps": steps,
-        "depends_on": [],
+        "steps": [
+            {
+                "name": "generate",
+                "image": "golang:1.18",
+                "pull": "always",
+                "commands": [
+                    "make generate",
+                ],
+                "volumes": [
+                    {
+                        "name": "godeps",
+                        "path": "/go",
+                    },
+                ],
+            },
+            {
+                "name": "build",
+                "image": "golang:1.18",
+                "pull": "always",
+                "commands": [
+                    "make build",
+                ],
+                "volumes": [
+                    {
+                        "name": "godeps",
+                        "path": "/go",
+                    },
+                ],
+            },
+            {
+                "name": "dryrun",
+                "image": "plugins/docker:20",
+                "pull": "always",
+                "settings": {
+                    "dry_run": True,
+                    "dockerfile": "docker/Dockerfile.%s" % (arch),
+                    "repo": "owncloudci/%s" % (ctx.repo.name),
+                    "tags": "latest",
+                },
+                "when": {
+                    "ref": {
+                        "include": [
+                            "refs/pull/**",
+                        ],
+                    },
+                },
+            },
+            {
+                "name": "docker",
+                "image": "plugins/docker:20",
+                "pull": "always",
+                "settings": {
+                    "username": {
+                        "from_secret": "registry_username",
+                    },
+                    "password": {
+                        "from_secret": "registry_password",
+                    },
+                    "auto_tag": True,
+                    "auto_tag_suffix": "%s" % (arch),
+                    "dockerfile": "docker/Dockerfile.%s" % (arch),
+                    "repo": "owncloudci/%s" % (ctx.repo.name),
+                },
+                "when": {
+                    "ref": {
+                        "exclude": [
+                            "refs/pull/**",
+                        ],
+                    },
+                },
+            },
+        ],
+        "volumes": [
+            {
+                "name": "godeps",
+                "temp": {},
+            },
+        ],
+        "depends_on": [
+            "test",
+        ],
         "trigger": {
             "ref": [
                 "refs/heads/master",
@@ -218,115 +324,35 @@ def manifest(ctx):
     }]
 
 def pushrm(ctx):
-  return [{
-    "kind": "pipeline",
-    "type": "docker",
-    "name": "pushrm",
-    "steps": [
-        {
-            "name": "pushrm",
-            "image": "chko/docker-pushrm:1",
-            "environment": {
-                "DOCKER_PASS": {
-                    "from_secret": "docker_password",
+    return [{
+        "kind": "pipeline",
+        "type": "docker",
+        "name": "pushrm",
+        "steps": [
+            {
+                "name": "pushrm",
+                "image": "chko/docker-pushrm:1",
+                "environment": {
+                    "DOCKER_PASS": {
+                        "from_secret": "docker_password",
+                    },
+                    "DOCKER_USER": {
+                        "from_secret": "docker_username",
+                    },
+                    "PUSHRM_FILE": "README.md",
+                    "PUSHRM_SHORT": "Drone plugin to provision infrastructure with Ansible",
+                    "PUSHRM_TARGET": "owncloudci/%s" % (ctx.repo.name),
                 },
-                "DOCKER_USER": {
-                    "from_secret": "docker_username",
-                },
-                "PUSHRM_FILE": "README.md",
-                "PUSHRM_SHORT": "Drone plugin to provision infrastructure with Ansible",
-                "PUSHRM_TARGET": "owncloudci/%s" % (ctx.repo.name),
             },
-        },
-    ],
-    "depends_on": [
-        "manifest",
-    ],
-    "trigger": {
-        "ref": [
-            "refs/heads/master",
-            "refs/tags/**",
         ],
-        "status": ["success"],
-    },
-  }]
-
-def release(ctx):
-  return [{
-    "kind": "pipeline",
-    "type": "docker",
-    "name": "release",
-    "steps": [
-        {
-            "name": "changelog",
-            "image": "thegeeklab/git-chglog",
-            "commands": [
-                "git fetch -tq",
-                "git-chglog --no-color --no-emoji %s" % (ctx.build.ref.replace("refs/tags/", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
-                "git-chglog --no-color --no-emoji -o CHANGELOG.md %s" % (ctx.build.ref.replace("refs/tags/", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
-            ]
-        },
-        {
-           "name": "release",
-           "image": "plugins/github-release",
-           "settings": {
-               "api_key": {
-                   "from_secret": "github_token",
-               },
-               "note": "CHANGELOG.md",
-               "overwrite": True,
-               "title": ctx.build.ref.replace("refs/tags/", ""),
-           },
-           "when": {
-             "ref": [
+        "depends_on": [
+            "manifest",
+        ],
+        "trigger": {
+            "ref": [
+                "refs/heads/master",
                 "refs/tags/**",
-             ],
-          },
-        }
-    ],
-    "depends_on": [
-        "pushrm",
-    ],
-    "trigger": {
-        "ref": [
-            "refs/heads/master",
-            "refs/tags/**",
-            "refs/pull/**",
-        ],
-    },
-  }]
-
-def notification(ctx):
-  return [{
-    "kind": "pipeline",
-    "type": "docker",
-    "name": "notify",
-    "clone": {
-        "disable": True,
-    },
-    "steps": [
-        {
-            "name": "notify",
-            "image": "plugins/slack",
-            "settings": {
-            "webhook": {
-                "from_secret": "private_rocketchat",
-            },
-            "channel": "builds",
-            },
-        }
-    ],
-    "depends_on": [
-        "release",
-    ],
-    "trigger": {
-        "ref": [
-            "refs/heads/master",
-            "refs/tags/**",
-        ],
-        "status": [
-            "success",
-            "failure",
-        ],
-    },
-  }]
+            ],
+            "status": ["success"],
+        },
+    }]

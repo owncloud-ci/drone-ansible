@@ -13,8 +13,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var ansibleFolder = "/etc/ansible"
-var ansibleConfig = "/etc/ansible/ansible.cfg"
+var (
+	ansibleFolder = "/etc/ansible"
+	ansibleConfig = "/etc/ansible/ansible.cfg"
+)
 
 var ansibleContent = `
 [defaults]
@@ -26,7 +28,7 @@ func (p *Plugin) ansibleConfig() error {
 		return errors.Wrap(err, "failed to create ansible directory")
 	}
 
-	if err := ioutil.WriteFile(ansibleConfig, []byte(ansibleContent), 0600); err != nil {
+	if err := ioutil.WriteFile(ansibleConfig, []byte(ansibleContent), 0o600); err != nil {
 		return errors.Wrap(err, "failed to create ansible config")
 	}
 
@@ -35,7 +37,6 @@ func (p *Plugin) ansibleConfig() error {
 
 func (p *Plugin) privateKey() error {
 	tmpfile, err := ioutil.TempFile("", "privateKey")
-
 	if err != nil {
 		return errors.Wrap(err, "failed to create private key file")
 	}
@@ -54,7 +55,6 @@ func (p *Plugin) privateKey() error {
 
 func (p *Plugin) vaultPass() error {
 	tmpfile, err := ioutil.TempFile("", "vaultPass")
-
 	if err != nil {
 		return errors.Wrap(err, "failed to create vault password file")
 	}
@@ -72,13 +72,10 @@ func (p *Plugin) vaultPass() error {
 }
 
 func (p *Plugin) playbooks() error {
-	var (
-		playbooks []string
-	)
+	var playbooks []string
 
 	for _, p := range p.settings.Playbooks.Value() {
 		files, err := filepath.Glob(p)
-
 		if err != nil {
 			playbooks = append(playbooks, p)
 			continue
