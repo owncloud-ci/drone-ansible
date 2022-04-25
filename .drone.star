@@ -21,7 +21,7 @@ def main(ctx):
     return before + stages + after
 
 def test(ctx):
-    return {
+    return [{
         "kind": "pipeline",
         "type": "docker",
         "name": "test",
@@ -96,7 +96,7 @@ def test(ctx):
                 "refs/pull/**",
             ],
         },
-    }
+    }]
 
 def build(ctx):
     return {
