@@ -255,10 +255,10 @@ def docker(ctx, arch):
                 "pull": "always",
                 "settings": {
                     "username": {
-                        "from_secret": "registry_username",
+                        "from_secret": "docker_username",
                     },
                     "password": {
-                        "from_secret": "registry_password",
+                        "from_secret": "docker_password",
                     },
                     "auto_tag": True,
                     "auto_tag_suffix": "%s" % (arch),
