@@ -200,7 +200,7 @@ def docker(ctx, arch):
         "name": "build-%s" % (arch),
         "platform": {
             "os": "linux",
-            "arch": "amd64",
+            "arch": arch,
         },
         "steps": [
             {
