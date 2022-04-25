@@ -193,7 +193,7 @@ def build(ctx):
         },
     }
 
-def docker(ctx):
+def docker(ctx, arch):
     return {
         "kind": "pipeline",
         "type": "docker",
