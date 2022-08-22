@@ -28,4 +28,4 @@ run:
 linters-settings:
   gofumpt:
     extra-rules: true
-    lang-version: "1.18"
+    lang-version: "1.19"
