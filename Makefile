@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases depName=mvdan/gofumpt
-GOFUMPT_PACKAGE_VERSION := v0.3.1
+GOFUMPT_PACKAGE_VERSION := v0.4.0
 # renovate: datasource=github-releases depName=golangci/golangci-lint
 GOLANGCI_LINT_PACKAGE_VERSION := v1.49.0
 
