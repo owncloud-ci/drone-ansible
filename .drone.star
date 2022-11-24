@@ -127,6 +127,7 @@ def build(ctx):
                 "image": "techknowlogick/xgo:go-1.19.x",
                 "pull": "always",
                 "commands": [
+                    "ln -s /drone/src /source",
                     "make release",
                 ],
                 "volumes": [
