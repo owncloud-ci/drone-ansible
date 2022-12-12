@@ -21,7 +21,7 @@ XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
 GENERATE ?= $(IMPORT)/pkg/templates
 XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
 XGO_VERSION := go-1.19.x
-XGO_TARGETS ?= linux/amd64,linux/arm-6,linux/arm64,darwin/amd64,darwin/arm64,windows/amd64
+XGO_TARGETS ?= linux/amd64,linux/arm64,darwin/amd64,darwin/arm64,windows/amd64
 
 TAGS ?= netgo
 

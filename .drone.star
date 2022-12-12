@@ -4,7 +4,6 @@ def main(ctx):
     stages = [
         docker(ctx, "amd64"),
         docker(ctx, "arm64"),
-        docker(ctx, "arm"),
         build(ctx),
     ]
 
