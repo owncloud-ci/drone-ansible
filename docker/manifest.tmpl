@@ -15,8 +15,3 @@ manifests:
       architecture: arm64
       os: linux
       variant: v8
-  - image: owncloudci/drone-ansible:{{#if build.tag}}{{trimPrefix "v" build.tag}}-{{/if}}arm
-    platform:
-      architecture: arm
-      os: linux
-      variant: v7
