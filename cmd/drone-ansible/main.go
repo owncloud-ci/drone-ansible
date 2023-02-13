@@ -12,6 +12,7 @@ import (
 	"github.com/drone-plugins/drone-plugin-lib/urfave"
 )
 
+//nolint:gochecknoglobals
 var (
 	BuildVersion = "devel"
 	BuildDate    = "00000000"
@@ -52,19 +53,11 @@ func run(settings *plugin.Settings) cli.ActionFunc {
 		)
 
 		if err := plugin.Validate(); err != nil {
-			if e, ok := err.(errors.ExitCoder); ok {
-				return e
-			}
-
-			return errors.ExitMessagef("validation failed: %w", err)
+			return fmt.Errorf("validation failed: %w", err)
 		}
 
 		if err := plugin.Execute(); err != nil {
-			if e, ok := err.(errors.ExitCoder); ok {
-				return e
-			}
-
-			return errors.ExitMessagef("execution failed: %w", err)
+			return fmt.Errorf("execution failed: %w", err)
 		}
 
 		return nil
