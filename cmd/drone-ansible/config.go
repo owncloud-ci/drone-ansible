@@ -120,7 +120,7 @@ func settingsFlags(settings *plugin.Settings) []cli.Flag {
 			Name:        "forks",
 			Usage:       "specify number of parallel processes to use",
 			EnvVars:     []string{"PLUGIN_FORKS"},
-			Value:       5,
+			Value:       plugin.AnsibleForksDefault,
 			Destination: &settings.Forks,
 		},
 		&cli.StringFlag{

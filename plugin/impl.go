@@ -2,10 +2,10 @@ package plugin
 
 import (
 	"os"
-	"os/exec"
 
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/sys/execabs"
 )
 
 // Settings for the Plugin.
@@ -86,7 +86,7 @@ func (p *Plugin) Execute() error {
 		defer os.Remove(p.settings.VaultPasswordFile)
 	}
 
-	commands := []*exec.Cmd{
+	commands := []*execabs.Cmd{
 		p.versionCommand(),
 	}
 

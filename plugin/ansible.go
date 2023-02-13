@@ -3,21 +3,30 @@ package plugin
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
+	"golang.org/x/sys/execabs"
 )
 
-var (
+const (
+	AnsibleForksDefault = 5
+
 	ansibleFolder = "/etc/ansible"
 	ansibleConfig = "/etc/ansible/ansible.cfg"
+
+	pipBin             = "/usr/bin/pip"
+	ansibleBin         = "/usr/bin/ansible"
+	ansibleGalaxyBin   = "/usr/bin/ansible-galaxy"
+	ansiblePlaybookBin = "/usr/bin/ansible-playbook"
+
+	strictFilePerm = 0o600
 )
 
-var ansibleContent = `
+const ansibleContent = `
 [defaults]
 host_key_checking = False
 `
@@ -27,7 +36,7 @@ func (p *Plugin) ansibleConfig() error {
 		return errors.Wrap(err, "failed to create ansible directory")
 	}
 
-	if err := os.WriteFile(ansibleConfig, []byte(ansibleContent), 0o600); err != nil {
+	if err := os.WriteFile(ansibleConfig, []byte(ansibleContent), strictFilePerm); err != nil {
 		return errors.Wrap(err, "failed to create ansible config")
 	}
 
@@ -49,6 +58,7 @@ func (p *Plugin) privateKey() error {
 	}
 
 	p.settings.PrivateKeyFile = tmpfile.Name()
+
 	return nil
 }
 
@@ -67,6 +77,7 @@ func (p *Plugin) vaultPass() error {
 	}
 
 	p.settings.VaultPasswordFile = tmpfile.Name()
+
 	return nil
 }
 
@@ -77,6 +88,7 @@ func (p *Plugin) playbooks() error {
 		files, err := filepath.Glob(p)
 		if err != nil {
 			playbooks = append(playbooks, p)
+
 			continue
 		}
 
@@ -88,21 +100,22 @@ func (p *Plugin) playbooks() error {
 	}
 
 	p.settings.Playbooks = *cli.NewStringSlice(playbooks...)
+
 	return nil
 }
 
-func (p *Plugin) versionCommand() *exec.Cmd {
+func (p *Plugin) versionCommand() *execabs.Cmd {
 	args := []string{
 		"--version",
 	}
 
-	return exec.Command(
-		"ansible",
+	return execabs.Command(
+		ansibleBin,
 		args...,
 	)
 }
 
-func (p *Plugin) requirementsCommand() *exec.Cmd {
+func (p *Plugin) requirementsCommand() *execabs.Cmd {
 	args := []string{
 		"install",
 		"--upgrade",
@@ -110,13 +123,13 @@ func (p *Plugin) requirementsCommand() *exec.Cmd {
 		p.settings.Requirements,
 	}
 
-	return exec.Command(
-		"pip",
+	return execabs.Command(
+		pipBin,
 		args...,
 	)
 }
 
-func (p *Plugin) galaxyCommand() *exec.Cmd {
+func (p *Plugin) galaxyCommand() *execabs.Cmd {
 	args := []string{
 		"install",
 		"--force",
@@ -128,13 +141,13 @@ func (p *Plugin) galaxyCommand() *exec.Cmd {
 		args = append(args, fmt.Sprintf("-%s", strings.Repeat("v", p.settings.Verbose)))
 	}
 
-	return exec.Command(
-		"ansible-galaxy",
+	return execabs.Command(
+		ansibleGalaxyBin,
 		args...,
 	)
 }
 
-func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
+func (p *Plugin) ansibleCommand(inventory string) *execabs.Cmd {
 	args := []string{
 		"--inventory",
 		inventory,
@@ -160,8 +173,8 @@ func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
 		args = append(args, "--list-hosts")
 		args = append(args, p.settings.Playbooks.Value()...)
 
-		return exec.Command(
-			"ansible-playbook",
+		return execabs.Command(
+			ansiblePlaybookBin,
 			args...,
 		)
 	}
@@ -170,8 +183,8 @@ func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
 		args = append(args, "--syntax-check")
 		args = append(args, p.settings.Playbooks.Value()...)
 
-		return exec.Command(
-			"ansible-playbook",
+		return execabs.Command(
+			ansiblePlaybookBin,
 			args...,
 		)
 	}
@@ -192,7 +205,7 @@ func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
 		args = append(args, "--force-handlers")
 	}
 
-	if p.settings.Forks != 5 {
+	if p.settings.Forks != AnsibleForksDefault {
 		args = append(args, "--forks", strconv.Itoa(p.settings.Forks))
 	}
 
@@ -270,12 +283,12 @@ func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
 
 	args = append(args, p.settings.Playbooks.Value()...)
 
-	return exec.Command(
-		"ansible-playbook",
+	return execabs.Command(
+		ansiblePlaybookBin,
 		args...,
 	)
 }
 
-func trace(cmd *exec.Cmd) {
+func trace(cmd *execabs.Cmd) {
 	fmt.Println("$", strings.Join(cmd.Args, " "))
 }
