@@ -53,11 +53,21 @@ func run(settings *plugin.Settings) cli.ActionFunc {
 		)
 
 		if err := plugin.Validate(); err != nil {
-			return fmt.Errorf("validation failed: %w", err)
+			//nolint:errorlint
+			if e, ok := err.(errors.ExitCoder); ok {
+				return e
+			}
+
+			return errors.ExitMessagef("validation failed: %w", err)
 		}
 
 		if err := plugin.Execute(); err != nil {
-			return fmt.Errorf("execution failed: %w", err)
+			//nolint:errorlint
+			if e, ok := err.(errors.ExitCoder); ok {
+				return e
+			}
+
+			return errors.ExitMessagef("execution failed: %w", err)
 		}
 
 		return nil
