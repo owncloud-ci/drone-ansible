@@ -31,7 +31,7 @@ def test(ctx):
         "steps": [
             {
                 "name": "deps",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "commands": [
                     "make deps",
                 ],
@@ -44,7 +44,7 @@ def test(ctx):
             },
             {
                 "name": "generate",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "commands": [
                     "make generate",
                 ],
@@ -57,7 +57,7 @@ def test(ctx):
             },
             {
                 "name": "lint",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "commands": [
                     "make lint",
                 ],
@@ -70,7 +70,7 @@ def test(ctx):
             },
             {
                 "name": "test",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "commands": [
                     "make test",
                 ],
@@ -109,7 +109,7 @@ def build(ctx):
         "steps": [
             {
                 "name": "generate",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "pull": "always",
                 "commands": [
                     "make generate",
@@ -123,7 +123,7 @@ def build(ctx):
             },
             {
                 "name": "build",
-                "image": "techknowlogick/xgo:go-1.20.x",
+                "image": "docker.io/techknowlogick/xgo:go-1.20.x",
                 "pull": "always",
                 "commands": [
                     "ln -s /drone/src /source",
@@ -138,7 +138,7 @@ def build(ctx):
             },
             {
                 "name": "executable",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "pull": "always",
                 "commands": [
                     "$(find dist/ -executable -type f -iname drone-ansible-linux-amd64) --help",
@@ -146,7 +146,7 @@ def build(ctx):
             },
             {
                 "name": "changelog",
-                "image": "thegeeklab/git-chglog",
+                "image": "quay.io/thegeeklab/git-chglog",
                 "commands": [
                     "git fetch -tq",
                     "git-chglog --no-color --no-emoji %s" % (ctx.build.ref.replace("refs/tags/", "") if ctx.build.event == "tag" else "--next-tag unreleased unreleased"),
@@ -155,7 +155,7 @@ def build(ctx):
             },
             {
                 "name": "publish",
-                "image": "plugins/github-release",
+                "image": "docker.io/plugins/github-release",
                 "pull": "always",
                 "settings": {
                     "api_key": {
@@ -205,7 +205,7 @@ def docker(ctx, arch):
         "steps": [
             {
                 "name": "generate",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "pull": "always",
                 "commands": [
                     "make generate",
@@ -219,7 +219,7 @@ def docker(ctx, arch):
             },
             {
                 "name": "build",
-                "image": "golang:1.20",
+                "image": "docker.io/golang:1.20",
                 "pull": "always",
                 "commands": [
                     "make build",
@@ -233,7 +233,7 @@ def docker(ctx, arch):
             },
             {
                 "name": "dryrun",
-                "image": "plugins/docker:20",
+                "image": "docker.io/plugins/docker:20",
                 "pull": "always",
                 "settings": {
                     "dry_run": True,
@@ -251,7 +251,7 @@ def docker(ctx, arch):
             },
             {
                 "name": "docker",
-                "image": "plugins/docker:20",
+                "image": "docker.io/plugins/docker:20",
                 "pull": "always",
                 "settings": {
                     "username": {
@@ -300,7 +300,7 @@ def manifest(ctx):
         "steps": [
             {
                 "name": "manifest",
-                "image": "plugins/manifest",
+                "image": "docker.io/plugins/manifest",
                 "settings": {
                     "auto_tag": "true",
                     "username": {
@@ -331,7 +331,7 @@ def pushrm(ctx):
         "steps": [
             {
                 "name": "pushrm",
-                "image": "chko/docker-pushrm:1",
+                "image": "docker.io/chko/docker-pushrm:1",
                 "environment": {
                     "DOCKER_PASS": {
                         "from_secret": "docker_password",
