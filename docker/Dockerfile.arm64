@@ -14,7 +14,7 @@ ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-8.2.0}"
 
 RUN apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-requests py3-paramiko python3-dev libffi-dev build-base && \
   pip3 install -U pip && \
-  pip3 install ansible=="${ANSIBLE_VERSION}" boto3 hcloud pywinrm passlib && \
+  pip3 install ansible=="${ANSIBLE_VERSION}" boto3 hcloud pywinrm passlib jsonschema && \
   apk del --no-cache python3-dev libffi-dev build-base
 
 ADD dist/drone-ansible /bin/
