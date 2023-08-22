@@ -1,6 +1,6 @@
 module github.com/owncloud-ci/drone-ansible
 
-go 1.20
+go 1.21
 
 require (
 	github.com/drone-plugins/drone-plugin-lib v0.4.1
