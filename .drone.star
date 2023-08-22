@@ -31,7 +31,7 @@ def test(ctx):
         "steps": [
             {
                 "name": "deps",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "commands": [
                     "make deps",
                 ],
@@ -44,7 +44,7 @@ def test(ctx):
             },
             {
                 "name": "generate",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "commands": [
                     "make generate",
                 ],
@@ -57,7 +57,7 @@ def test(ctx):
             },
             {
                 "name": "lint",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "commands": [
                     "make lint",
                 ],
@@ -70,7 +70,7 @@ def test(ctx):
             },
             {
                 "name": "test",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "commands": [
                     "make test",
                 ],
@@ -109,7 +109,7 @@ def build(ctx):
         "steps": [
             {
                 "name": "generate",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "pull": "always",
                 "commands": [
                     "make generate",
@@ -123,7 +123,7 @@ def build(ctx):
             },
             {
                 "name": "build",
-                "image": "docker.io/techknowlogick/xgo:go-1.20.x",
+                "image": "docker.io/techknowlogick/xgo:go-1.21.x",
                 "pull": "always",
                 "commands": [
                     "ln -s /drone/src /source",
@@ -138,7 +138,7 @@ def build(ctx):
             },
             {
                 "name": "executable",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "pull": "always",
                 "commands": [
                     "$(find dist/ -executable -type f -iname drone-ansible-linux-amd64) --help",
@@ -205,7 +205,7 @@ def docker(ctx, arch):
         "steps": [
             {
                 "name": "generate",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "pull": "always",
                 "commands": [
                     "make generate",
@@ -219,7 +219,7 @@ def docker(ctx, arch):
             },
             {
                 "name": "build",
-                "image": "docker.io/golang:1.20",
+                "image": "docker.io/golang:1.21",
                 "pull": "always",
                 "commands": [
                     "make build",
