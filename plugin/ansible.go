@@ -31,6 +31,8 @@ const ansibleContent = `
 host_key_checking = False
 `
 
+var ErrAnsiblePlaybookNotFound = errors.New("playbook not found")
+
 func (p *Plugin) ansibleConfig() error {
 	if err := os.MkdirAll(ansibleFolder, os.ModePerm); err != nil {
 		return fmt.Errorf("failed to create ansible directory: %w", err)
@@ -96,7 +98,7 @@ func (p *Plugin) playbooks() error {
 	}
 
 	if len(playbooks) == 0 {
-		return errors.New("failed to find playbook files")
+		return ErrAnsiblePlaybookNotFound
 	}
 
 	p.settings.Playbooks = *cli.NewStringSlice(playbooks...)

@@ -47,14 +47,19 @@ type Settings struct {
 	BecomeUser        string
 }
 
+var (
+	ErrPluginPlaybookNotSet  = errors.New("playbook is required")
+	ErrPluginInventoryNotSet = errors.New("inventory is required")
+)
+
 // Validate handles the settings validation of the plugin.
 func (p *Plugin) Validate() error {
 	if len(p.settings.Playbooks.Value()) == 0 {
-		return errors.New("you must provide a playbook")
+		return ErrPluginPlaybookNotSet
 	}
 
 	if len(p.settings.Inventories.Value()) == 0 {
-		return errors.New("you must provide an inventory")
+		return ErrPluginInventoryNotSet
 	}
 
 	return nil
