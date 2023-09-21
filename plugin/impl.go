@@ -1,9 +1,9 @@
 package plugin
 
 import (
+	"errors"
 	"os"
 
-	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 	"golang.org/x/sys/execabs"
 )

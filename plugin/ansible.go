@@ -1,13 +1,13 @@
 package plugin
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 	"golang.org/x/sys/execabs"
 )
@@ -33,11 +33,11 @@ host_key_checking = False
 
 func (p *Plugin) ansibleConfig() error {
 	if err := os.MkdirAll(ansibleFolder, os.ModePerm); err != nil {
-		return errors.Wrap(err, "failed to create ansible directory")
+		return fmt.Errorf("failed to create ansible directory: %w", err)
 	}
 
 	if err := os.WriteFile(ansibleConfig, []byte(ansibleContent), strictFilePerm); err != nil {
-		return errors.Wrap(err, "failed to create ansible config")
+		return fmt.Errorf("failed to create ansible config: %w", err)
 	}
 
 	return nil
@@ -46,15 +46,15 @@ func (p *Plugin) ansibleConfig() error {
 func (p *Plugin) privateKey() error {
 	tmpfile, err := os.CreateTemp("", "privateKey")
 	if err != nil {
-		return errors.Wrap(err, "failed to create private key file")
+		return fmt.Errorf("failed to create private key file: %w", err)
 	}
 
 	if _, err := tmpfile.Write([]byte(p.settings.PrivateKey)); err != nil {
-		return errors.Wrap(err, "failed to write private key file")
+		return fmt.Errorf("failed to write private key file: %w", err)
 	}
 
 	if err := tmpfile.Close(); err != nil {
-		return errors.Wrap(err, "failed to close private key file")
+		return fmt.Errorf("failed to close private key file: %w", err)
 	}
 
 	p.settings.PrivateKeyFile = tmpfile.Name()
@@ -65,15 +65,15 @@ func (p *Plugin) privateKey() error {
 func (p *Plugin) vaultPass() error {
 	tmpfile, err := os.CreateTemp("", "vaultPass")
 	if err != nil {
-		return errors.Wrap(err, "failed to create vault password file")
+		return fmt.Errorf("failed to create vault password file: %w", err)
 	}
 
 	if _, err := tmpfile.Write([]byte(p.settings.VaultPassword)); err != nil {
-		return errors.Wrap(err, "failed to write vault password file")
+		return fmt.Errorf("failed to write vault password file: %w", err)
 	}
 
 	if err := tmpfile.Close(); err != nil {
-		return errors.Wrap(err, "failed to close vault password file")
+		return fmt.Errorf("failed to close vault password file: %w", err)
 	}
 
 	p.settings.VaultPasswordFile = tmpfile.Name()
