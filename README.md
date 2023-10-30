@@ -8,6 +8,10 @@
 
 Drone plugin to provision infrastructure with [Ansible](https://www.ansible.com/).
 
+## Versioning
+
+The tags follow the major version of Docker, e.g. `8`, and the minor and patch parts reflect the `version` of the plugin. A full example would be `8.5.2`. Minor versions can introduce breaking changes, while patch versions can be considered non-breaking.
+
 ## Usage
 
 ```yaml
