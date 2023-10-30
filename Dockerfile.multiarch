@@ -1,3 +1,13 @@
+FROM --platform=$BUILDPLATFORM golang:1.21 as build
+
+ARG TARGETOS
+ARG TARGETARCH
+
+ADD . /src
+WORKDIR /src
+
+RUN make build
+
 FROM docker.io/alpine:3.18@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
@@ -7,6 +17,8 @@ LABEL org.opencontainers.image.url="https://github.com/owncloud-ci/drone-ansible
 LABEL org.opencontainers.image.source="https://github.com/owncloud-ci/drone-ansible"
 LABEL org.opencontainers.image.documentation="https://github.com/owncloud-ci/drone-ansible"
 
+ARG TARGETOS
+ARG TARGETARCH
 ARG ANSIBLE_VERSION
 
 # renovate: datasource=pypi depName=ansible
@@ -17,6 +29,5 @@ RUN apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-re
   pip3 install ansible=="${ANSIBLE_VERSION}" boto3 hcloud pywinrm passlib jsonschema && \
   apk del --no-cache python3-dev libffi-dev build-base
 
-ADD dist/drone-ansible /bin/
-
+COPY --from=build /src/dist/drone-docker-buildx /bin/drone-docker-buildx
 ENTRYPOINT ["/bin/drone-ansible"]

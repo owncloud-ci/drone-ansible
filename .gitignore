@@ -3,5 +3,4 @@
 /drone-ansible*
 
 coverage.out
-.drone.yml
 CHANGELOG.md

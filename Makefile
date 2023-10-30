@@ -23,7 +23,7 @@ GENERATE ?= $(IMPORT)/pkg/templates
 XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
 GOTESTSUM_PACKAGE ?= gotest.tools/gotestsum@latest
 XGO_VERSION := go-1.21.x
-XGO_TARGETS ?= linux/amd64,linux/arm64,darwin/amd64,darwin/arm64,windows/amd64
+XGO_TARGETS ?= linux/amd64,linux/arm64
 
 TAGS ?= netgo
 
@@ -62,8 +62,7 @@ lint: golangci-lint
 
 .PHONY: generate
 generate:
-	go generate $(GENERATE)
-
+	$(GO) generate $(GENERATE)
 
 .PHONY: test
 test:

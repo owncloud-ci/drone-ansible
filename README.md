@@ -4,35 +4,42 @@
 [![Docker Hub](https://img.shields.io/docker/v/owncloudci/drone-ansible?logo=docker&label=dockerhub&sort=semver&logoColor=white)](https://hub.docker.com/r/owncloudci/drone-ansible)
 [![GitHub contributors](https://img.shields.io/github/contributors/owncloud-ci/drone-ansible)](https://github.com/owncloud-ci/drone-ansible/graphs/contributors)
 [![Source: GitHub](https://img.shields.io/badge/source-github-blue.svg?logo=github&logoColor=white)](https://github.com/owncloud-ci/drone-ansible)
-[![License: Apache-2.0](https://img.shields.io/github/license/owncloud-ci/drone-ansible)](https://github.com/owncloud-ci/drone-ansible/blob/master/LICENSE)
+[![License: Apache-2.0](https://img.shields.io/github/license/owncloud-ci/drone-ansible)](https://github.com/owncloud-ci/drone-ansible/blob/main/LICENSE)
 
 Drone plugin to provision infrastructure with [Ansible](https://www.ansible.com/).
+
+## Usage
+
+```yaml
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: ansible
+    image: owncloudci/drone-ansible
+    settings:
+      playbook: deployment/playbook.yml
+      private_key:
+        from_secret: ansible_private_key
+      inventory: deployment/hosts.yml
+```
 
 ## Build
 
 Build the binary with the following command:
 
 ```console
-export GOOS=linux
-export GOARCH=amd64
-export CGO_ENABLED=0
-export GO111MODULE=on
-
 make build
 ```
-
-## Docker
 
 Build the Docker image with the following command:
 
 ```console
-docker build \
-  --label org.label-schema.build-date=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-  --label org.label-schema.vcs-ref=$(git rev-parse --short HEAD) \
-  --file docker/Dockerfile.linux.amd64 --tag plugins/ansible .
+docker build --file Dockerfile.multiarch --tag owncloudci/drone-ansible .
 ```
 
-## Usage
+## Test
 
 ```console
 docker run --rm \
@@ -41,31 +48,24 @@ docker run --rm \
   -e PLUGIN_INVENTORY="deployment/hosts.yml" \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
-  plugins/ansible
+  owncloudci/drone-ansible --dry-run
 ```
 
 ## Releases
 
-Please create and commit a changelog for the next tag first:
+Create and push the new tag to trigger the CI release process:
 
-```Shell
-git-chglog -o CHANGELOG.md --next-tag v2.10.3 v2.10.3
-git add CHANGELOG.md; git commit -m "[skip ci] update changelog"; git push
-```
-
-Afterwards create and push the new tag to trigger the CI release process:
-
-```Shell
+```console
 git tag v2.10.3
 git push origin v2.10.3
 ```
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/owncloud-ci/drone-ansible/blob/master/LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/owncloud-ci/drone-ansible/blob/main/LICENSE) file for details.
 
 ## Copyright
 
-```Text
+```text
 Copyright (c) 2022 ownCloud GmbH
 ```
