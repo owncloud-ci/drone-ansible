@@ -86,7 +86,7 @@ steps:
         - dist/*
       note: CHANGELOG.md
       overwrite: true
-      title: refs/heads/main
+      title: ${DRONE_TAG}
     when:
       ref:
         - refs/tags/**
