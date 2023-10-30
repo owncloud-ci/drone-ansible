@@ -19,7 +19,7 @@ GOLANGCI_LINT_PACKAGE ?= github.com/golangci/golangci-lint/cmd/golangci-lint@$(G
 XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
 GOTESTSUM_PACKAGE ?= gotest.tools/gotestsum@latest
 
-GENERATE ?= $(IMPORT)/pkg/templates
+GENERATE ?=
 XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
 GOTESTSUM_PACKAGE ?= gotest.tools/gotestsum@latest
 XGO_VERSION := go-1.21.x
@@ -47,7 +47,7 @@ all: build
 .PHONY: clean
 clean:
 	$(GO) clean -i ./...
-	rm -rf $(DIST_DIRS)
+	@rm -rf $(DIST_DIRS)
 
 .PHONY: fmt
 fmt:
@@ -75,7 +75,7 @@ $(DIST)/$(NAME): $(SOURCES)
 	$(GO) build -v -tags '$(TAGS)' -ldflags '-extldflags "-static" $(LDFLAGS)' -o $@ ./cmd/$(NAME)
 
 $(DIST_DIRS):
-	mkdir -p $(DIST_DIRS)
+	@mkdir -p $(DIST_DIRS)
 
 .PHONY: xgo
 xgo: | $(DIST_DIRS)
