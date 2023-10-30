@@ -20,8 +20,6 @@ XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
 GOTESTSUM_PACKAGE ?= gotest.tools/gotestsum@latest
 
 GENERATE ?=
-XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
-GOTESTSUM_PACKAGE ?= gotest.tools/gotestsum@latest
 XGO_VERSION := go-1.21.x
 XGO_TARGETS ?= linux/amd64,linux/arm64
 
