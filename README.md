@@ -1,6 +1,6 @@
 # drone-ansible
 
-[![Build Status](https://img.shields.io/drone/build/owncloud-ci/drone-ansible?logo=drone&server=https%3A%2F%2Fdrone.owncloud.com)](https://drone.owncloud.com/owncloud-ci/drone-ansible)
+[![Build Status](https://drone.owncloud.com/api/badges/owncloud-ci/drone-ansible/status.svg)](https://drone.owncloud.com/owncloud-ci/drone-ansible)
 [![Docker Hub](https://img.shields.io/docker/v/owncloudci/drone-ansible?logo=docker&label=dockerhub&sort=semver&logoColor=white)](https://hub.docker.com/r/owncloudci/drone-ansible)
 [![GitHub contributors](https://img.shields.io/github/contributors/owncloud-ci/drone-ansible)](https://github.com/owncloud-ci/drone-ansible/graphs/contributors)
 [![Source: GitHub](https://img.shields.io/badge/source-github-blue.svg?logo=github&logoColor=white)](https://github.com/owncloud-ci/drone-ansible)
