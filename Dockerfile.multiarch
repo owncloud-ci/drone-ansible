@@ -22,7 +22,7 @@ ARG TARGETARCH
 ARG ANSIBLE_VERSION
 
 # renovate: datasource=pypi depName=ansible
-ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-8.5.0}"
+ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-8.6.0}"
 
 RUN apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-requests py3-paramiko python3-dev libffi-dev build-base && \
   pip3 install -U pip && \
