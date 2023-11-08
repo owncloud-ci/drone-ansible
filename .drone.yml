@@ -8,22 +8,6 @@ platform:
   arch: amd64
 
 steps:
-  - name: deps
-    image: docker.io/golang:1.21
-    commands:
-      - make deps
-    volumes:
-      - name: godeps
-        path: /go
-
-  - name: generate
-    image: docker.io/golang:1.21
-    commands:
-      - make generate
-    volumes:
-      - name: godeps
-        path: /go
-
   - name: lint
     image: docker.io/golang:1.21
     commands:
