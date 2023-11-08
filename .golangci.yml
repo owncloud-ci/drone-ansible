@@ -96,4 +96,3 @@ run:
 linters-settings:
   gofumpt:
     extra-rules: true
-    lang-version: "1.21"
