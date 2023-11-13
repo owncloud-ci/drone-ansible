@@ -24,10 +24,14 @@ ARG ANSIBLE_VERSION
 # renovate: datasource=pypi depName=ansible
 ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-8.6.1}"
 
-RUN apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-requests py3-paramiko python3-dev libffi-dev build-base libcrypto3 libssl3 && \
+RUN apk --update add --virtual .build-deps python3-dev libffi-dev build-base && \
+  apk add --no-cache bash git curl rsync openssh-client sshpass py3-pip py3-requests py3-paramiko && \
+  apk upgrade --no-cache libcrypto3 libssl3 && \
   pip3 install -U pip && \
   pip3 install ansible=="${ANSIBLE_VERSION}" boto3 hcloud pywinrm passlib jsonschema && \
-  apk del --no-cache python3-dev libffi-dev build-base
+  apk del .build-deps && \
+  rm -rf /var/cache/apk/* && \
+  rm -rf /tmp/*
 
 COPY --from=build /src/dist/drone-ansible /bin/drone-ansible
 ENTRYPOINT ["/bin/drone-ansible"]
