@@ -95,19 +95,26 @@ platform:
   arch: amd64
 
 steps:
-  - name: dryrun
+  - name: security-build
     image: docker.io/owncloudci/drone-docker-buildx:1
     settings:
       dockerfile: Dockerfile.multiarch
-      dry_run: true
-      platforms:
-        - linux/amd64
-        - linux/arm64
-      provenance: false
+      output: type=oci,dest=oci/${DRONE_REPO_NAME},tar=false
       repo: owncloudci/${DRONE_REPO_NAME}
-    when:
-      ref:
-        - refs/pull/**
+
+  - name: security-scan
+    image: ghcr.io/aquasecurity/trivy
+    commands:
+      - trivy -v
+      - trivy image --input oci/${DRONE_REPO_NAME}
+    environment:
+      TRIVY_EXIT_CODE: 1
+      TRIVY_IGNORE_UNFIXED: True
+      TRIVY_NO_PROGRESS: True
+      TRIVY_SEVERITY: HIGH,CRITICAL
+      TRIVY_TIMEOUT: 1m
+    depends_on:
+      - security-build
 
   - name: publish
     image: docker.io/owncloudci/drone-docker-buildx:1
@@ -128,7 +135,7 @@ steps:
         - refs/heads/main
         - refs/tags/**
     depends_on:
-      - dryrun
+      - security-scan
 
 trigger:
   ref:
