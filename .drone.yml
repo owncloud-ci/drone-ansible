@@ -96,7 +96,7 @@ platform:
 
 steps:
   - name: security-build
-    image: docker.io/owncloudci/drone-docker-buildx:1
+    image: docker.io/owncloudci/drone-docker-buildx:2
     settings:
       dockerfile: Dockerfile.multiarch
       output: type=oci,dest=oci/${DRONE_REPO_NAME},tar=false
@@ -117,7 +117,7 @@ steps:
       - security-build
 
   - name: publish
-    image: docker.io/owncloudci/drone-docker-buildx:1
+    image: docker.io/owncloudci/drone-docker-buildx:2
     settings:
       auto_tag: true
       dockerfile: Dockerfile.multiarch
