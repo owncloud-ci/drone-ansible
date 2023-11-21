@@ -3,7 +3,7 @@ module github.com/owncloud-ci/drone-ansible
 go 1.21
 
 require (
-	github.com/drone-plugins/drone-plugin-lib v0.4.1
+	github.com/drone-plugins/drone-plugin-lib v0.4.2
 	github.com/joho/godotenv v1.5.1
 	github.com/urfave/cli/v2 v2.25.7
 	golang.org/x/sys v0.14.0
