@@ -22,7 +22,7 @@ ARG TARGETARCH
 ARG ANSIBLE_VERSION
 
 # renovate: datasource=pypi depName=ansible
-ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-9.0.1}"
+ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-9.1.0}"
 
 ENV PIPX_HOME=/opt/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin
