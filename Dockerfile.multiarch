@@ -24,6 +24,9 @@ ARG ANSIBLE_VERSION
 # renovate: datasource=pypi depName=ansible
 ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-9.0.1}"
 
+ENV PIPX_HOME=/opt/pipx
+ENV PIPX_BIN_DIR=/usr/local/bin
+
 RUN apk --update add --virtual .build-deps python3-dev libffi-dev build-base && \
     apk add --no-cache bash git curl rsync openssh-client sshpass pipx && \
     apk upgrade --no-cache libcrypto3 libssl3 && \
