@@ -28,7 +28,7 @@ ENV PIPX_HOME=/opt/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin
 
 RUN apk --update add --virtual .build-deps python3-dev libffi-dev build-base && \
-    apk add --no-cache bash git curl rsync openssh-client sshpass pipx py3-setuptools && \
+    apk add --no-cache bash git curl rsync openssh-client sshpass pipx && \
     apk upgrade --no-cache libcrypto3 libssl3 && \
     pipx install ansible=="${ANSIBLE_VERSION}" --include-deps && \
     pipx inject ansible boto3 && \
@@ -36,6 +36,7 @@ RUN apk --update add --virtual .build-deps python3-dev libffi-dev build-base && 
     pipx inject ansible pywinrm && \
     pipx inject ansible passlib && \
     pipx inject ansible jsonschema && \
+    $PIPX_HOME/shared/bin/pip install -U pip setuptools && \
     apk del .build-deps && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/*
