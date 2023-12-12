@@ -8,7 +8,10 @@ platform:
   arch: amd64
 
 steps:
-  - name: lint
+  - name: lint-editorconfig
+    image: docker.io/mstruebing/editorconfig-checker
+
+  - name: lint-golang
     image: docker.io/golang:1.21
     commands:
       - make lint
