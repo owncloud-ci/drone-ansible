@@ -8,7 +8,7 @@ WORKDIR /src
 
 RUN make build
 
-FROM docker.io/python:3.12-alpine
+FROM docker.io/python:3.12-alpine@sha256:c793b92fd9e0e2a0b611756788a033d569ca864b733461c8fb30cfd14847dbcf
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
