@@ -8,7 +8,7 @@ WORKDIR /src
 
 RUN make build
 
-FROM docker.io/alpine:3.19@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48
+FROM docker.io/python:3.12-alpine
 
 LABEL maintainer="ownCloud DevOps <devops@owncloud.com>"
 LABEL org.opencontainers.image.authors="ownCloud DevOps <devops@owncloud.com>"
@@ -24,22 +24,16 @@ ARG ANSIBLE_VERSION
 # renovate: datasource=pypi depName=ansible
 ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-9.1.0}"
 
-ENV PIPX_HOME=/opt/pipx
-ENV PIPX_BIN_DIR=/usr/local/bin
-
 RUN apk --update add --virtual .build-deps python3-dev libffi-dev build-base && \
-    apk add --no-cache bash git curl rsync openssh-client sshpass pipx && \
+    apk add --no-cache bash git curl rsync openssh-client sshpass && \
     apk upgrade --no-cache libcrypto3 libssl3 && \
-    pipx install ansible=="${ANSIBLE_VERSION}" --include-deps && \
-    pipx inject ansible boto3 && \
-    pipx inject ansible hcloud && \
-    pipx inject ansible pywinrm && \
-    pipx inject ansible passlib && \
-    pipx inject ansible jsonschema && \
-    $PIPX_HOME/shared/bin/pip install -U pip setuptools && \
+    pip install -qq --no-cache-dir --upgrade pip && \
+    pip install -qq --no-cache-dir ansible=="${ANSIBLE_VERSION}" \
+      boto3 hcloud pywinrm passlib jsonschema && \
     apk del .build-deps && \
     rm -rf /var/cache/apk/* && \
-    rm -rf /tmp/*
+    rm -rf /tmp/* && \
+    rm -rf /root/.cache/
 
 COPY --from=build /src/dist/drone-ansible /bin/drone-ansible
 ENTRYPOINT ["/bin/drone-ansible"]
