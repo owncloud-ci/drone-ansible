@@ -18,10 +18,10 @@ const (
 	ansibleFolder = "/etc/ansible"
 	ansibleConfig = "/etc/ansible/ansible.cfg"
 
-	pipBin             = "/usr/local/bin/ansible/pip"
-	ansibleBin         = "/usr/local/bin/ansible/ansible"
-	ansibleGalaxyBin   = "/usr/local/bin/ansible/ansible-galaxy"
-	ansiblePlaybookBin = "/usr/local/bin/ansible/ansible-playbook"
+	pipBin             = "/usr/local/bin/pip"
+	ansibleBin         = "/usr/local/bin/ansible"
+	ansibleGalaxyBin   = "/usr/local/bin/ansible-galaxy"
+	ansiblePlaybookBin = "/usr/local/bin/ansible-playbook"
 
 	strictFilePerm = 0o600
 )
