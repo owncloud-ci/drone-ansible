@@ -12,7 +12,7 @@ steps:
     image: docker.io/mstruebing/editorconfig-checker
 
   - name: lint-golang
-    image: docker.io/golang:1.21
+    image: docker.io/golang:1.22
     commands:
       - make lint
     volumes:
@@ -20,7 +20,7 @@ steps:
         path: /go
 
   - name: test
-    image: docker.io/golang:1.21
+    image: docker.io/golang:1.22
     commands:
       - make test
     volumes:
@@ -48,13 +48,13 @@ platform:
 
 steps:
   - name: build
-    image: docker.io/techknowlogick/xgo:go-1.21.x
+    image: docker.io/techknowlogick/xgo:go-1.22.x
     commands:
       - ln -s /drone/src /source
       - make release
 
   - name: executable
-    image: docker.io/golang:1.21
+    image: docker.io/golang:1.22
     commands:
       - $(find dist/ -executable -type f -iname ${DRONE_REPO_NAME}-linux-amd64) --help
 
