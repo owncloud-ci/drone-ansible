@@ -48,7 +48,7 @@ platform:
 
 steps:
   - name: build
-    image: docker.io/techknowlogick/xgo:go-1.21.x
+    image: docker.io/techknowlogick/xgo:go-1.22.x
     commands:
       - ln -s /drone/src /source
       - make release
