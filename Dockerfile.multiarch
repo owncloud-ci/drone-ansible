@@ -26,7 +26,7 @@ ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-9.2.0}"
 
 RUN apk --update add --virtual .build-deps python3-dev libffi-dev build-base && \
     apk add --no-cache bash git curl rsync openssh-client sshpass && \
-    apk upgrade --no-cache libcrypto3 libssl3 && \
+    apk upgrade --no-cache libcrypto3 libssl3 libexpat && \
     pip install -qq --no-cache-dir --upgrade pip && \
     pip install -qq --no-cache-dir ansible=="${ANSIBLE_VERSION}" \
       boto3 hcloud pywinrm passlib jsonschema && \
