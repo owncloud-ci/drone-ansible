@@ -22,7 +22,7 @@ ARG TARGETARCH
 ARG ANSIBLE_VERSION
 
 # renovate: datasource=pypi depName=ansible
-ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-9.3.0}"
+ENV ANSIBLE_VERSION="${ANSIBLE_VERSION:-9.4.0}"
 
 RUN apk --update add --virtual .build-deps python3-dev libffi-dev build-base && \
     apk add --no-cache bash git curl rsync openssh-client sshpass && \
