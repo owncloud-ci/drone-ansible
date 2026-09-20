@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/owncloud-ci/drone-ansible/plugin"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 // settingsFlags has the cli.Flags for the plugin.Settings.
