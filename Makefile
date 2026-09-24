@@ -1,7 +1,7 @@
 # renovate: datasource=github-releases depName=mvdan/gofumpt
 GOFUMPT_PACKAGE_VERSION := v0.6.0
 # renovate: datasource=github-releases depName=golangci/golangci-lint
-GOLANGCI_LINT_PACKAGE_VERSION := v1.59.1
+GOLANGCI_LINT_PACKAGE_VERSION := v2.14.0
 
 SHELL := bash
 NAME := drone-ansible
